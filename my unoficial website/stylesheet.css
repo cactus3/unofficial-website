@@ -1,0 +1,40 @@
+<style>
+.center {
+    margin: auto;
+    width: 60%;
+}
+#title{
+border-radius: 25px;
+background: #5576ff;
+padding: 10px;
+width: 100%px;
+}
+#inacord{
+border-radius: 10px;
+background: #9ca0b1;
+width: 400px;
+}
+button.accordion {
+    background-color: #cd13e5;
+    color: #1c1717;
+    cursor: pointer;
+    padding: 18px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    width: 300px;
+    transition: 0.4s;
+}
+button.accordion.active, button.accordion:hover {
+    background-color: #3020f2;
+}
+div.panel {
+    padding: 0 18px;
+    display: none;
+    background-color: white;
+}
+div.panel.show {
+    display: block;
+}
+</style>

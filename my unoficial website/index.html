@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mark's unofficial website</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css">
+</head>
+<body style="background-color: #55c4ff">
+    
+    <h1 id = "title" class = "center">Mark's Unofficial Website</h1>
+    <br>
+<div class = "center">    
+    
+<button class="accordion" > My Javascript Games</button>
+    
+<div class="panel" id = "inacord">
+    <h3>Games are a new art form! I like to make games more than play them because making games is using math and is like doing a puzzle! Here are some games iv'e made</h3>
+    <br>
+    <button onclick="window.open('pinball HTML.html')"><h3>pinball js</h3></button>
+</div><br> 
+    <button class="accordion">Download source code</button>
+    
+    
+<div class="panel" id = "inacord">
+    <h3>you can download the source code to this website and all of its games here. you have my permission to edit the games all you want, just give credit to me for making them.</h3>
+    <br>
+    <form method="get" action="index.html"><button type="submit"><h3>download my unofficial website here</h3></button>
+    </form>
+</div><br>
+    <button class="accordion">links to goood websites</button>
+    
+<div class="panel" id = "inacord">
+  <p>not there yet. sorry</p>
+</div>
+    </div>
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+    acc[i].onclick = function(){
+        this.classList.toggle("active");
+        this.nextElementSibling.classList.toggle("show");
+  }
+}
+</script>
+    
+</body>
+    
+
+</html>

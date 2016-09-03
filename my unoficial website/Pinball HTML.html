@@ -1,0 +1,355 @@
+<!DOCTYPE HTML>
+<!-- marks skinnr copyright 2016
+consists of 31 if statements
+and 7 functions 
+no 2d collision engines
+all scripts by me exept lines 40,43 and 44-->
+
+<html>
+ <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #e6e6e6;
+}
+button.L {
+    position: absolute;
+    left: 50px;
+    top: 620px;
+    width: 84px;
+    height: 40px;
+}
+button.R {
+    position: absolute;
+    left: 180px;
+    top: 620px;
+    width: 84px;
+    height: 40px;
+}
+button.P {
+    position: absolute;
+    left: 318px;
+    top: 620px;
+    width: 84px;
+    height: 40px;
+}
+</style>
+</head>
+  <body>
+    <canvas id="myCanvas" width="400" height="600"></canvas>
+    <script>
+//set up canvas
+var canvas = document.getElementById('myCanvas');
+var context = canvas.getContext('2d');
+context.font = "30px Arial";
+//set up variables
+var ball_x = 350;
+var ball_y = 200;
+var ball_radius = 15;
+var dv = 0;
+var sv = 0;
+var gravity = 0.098;
+var PS_ypos = 350;
+var RPA = 35;
+var RB = false;
+var LPA = 35;
+var LB = false;
+var pull = false;
+var launch = false;
+var score = 0;
+var Time = 10;
+var ssp = 0;
+var ssd = 1;
+ //repeat the function "update"
+      this.interval = setInterval(update, Time);
+      update();
+function drawScreen() // draw the objects on screen
+{
+//ball
+context.beginPath();
+context.arc(ball_x, ball_y, ball_radius, 0, 2 * Math.PI, false);
+context.fillStyle = '#4db8ff';
+context.fill();
+context.lineWidth = 5;
+context.strokeStyle = '#003300';
+context.stroke();
+//score systems
+context.fillStyle = '#ff8080'
+context.beginPath();
+context.moveTo(20 + ssp,60);
+context.lineTo(20 + ssp,100);
+context.lineTo(80 + ssp,100);
+context.lineTo(80 + ssp,60);
+context.closePath();
+context.fill();
+context.lineWidth = 5;
+context.strokeStyle = '#003300';
+context.stroke();
+//obsticals
+context.beginPath();
+context.arc(60, 300, 20, 0, 2 * Math.PI, false);
+context.fillStyle = '#d9d9d9';
+context.fill();
+context.lineWidth = 5;
+context.strokeStyle = '#003300';
+context.stroke();
+context.beginPath();
+context.arc(240, 300, 20, 0, 2 * Math.PI, false);
+context.fillStyle = '#d9d9d9';
+context.fill();
+context.lineWidth = 5;
+context.strokeStyle = '#003300';
+context.stroke();
+//gameboard
+context.fillStyle = '#00b300';
+context.beginPath();
+context.moveTo(398, 598);
+context.lineTo(300, 598);
+context.lineTo(300, 115);
+context.lineTo(315, 115);
+context.lineTo(315, 580);
+context.lineTo(385, 580);
+context.lineTo(385, 100);
+context.lineTo(315, 2);
+context.lineTo(398, 2);
+context.closePath();
+context.fill();
+context.lineWidth = 5;
+context.strokeStyle = '#003300';
+context.stroke();
+//pull spring
+context.fillStyle = '#ff6600'
+context.beginPath();
+context.moveTo(320,PS_ypos);
+context.lineTo(380,PS_ypos);
+context.lineTo(380,(PS_ypos + 25));
+context.lineTo(320,(PS_ypos + 25));
+context.closePath();
+context.fill();
+context.lineWidth = 5;
+context.strokeStyle = '#003300';
+context.stroke();
+//left paddle
+context.fillStyle = '#ffff00'
+context.beginPath();
+context.moveTo(15,500);
+context.lineTo(120,500 + LPA);
+context.lineTo(120,525 + LPA);
+context.lineTo(15,525);
+context.closePath();
+context.fill();
+context.lineWidth = 5;
+context.strokeStyle = '#003300';
+context.stroke();
+//right paddle
+context.fillStyle = '#ffff00'
+context.beginPath();
+context.moveTo(275,500);
+context.lineTo(170,500 + RPA);
+context.lineTo(170,525 + RPA);
+context.lineTo(275,525);
+context.closePath();
+context.fill();
+context.lineWidth = 5;
+context.strokeStyle = '#003300';
+context.stroke();
+//paddle balls
+context.beginPath();
+context.arc(12,515, 25, 0, 2 * Math.PI, false);
+context.fillStyle = '#4db8ff';
+context.fill();
+context.lineWidth = 5;
+context.strokeStyle = '#003300';
+context.stroke();
+context.beginPath();
+context.arc(275,515, 25, 0, 2 * Math.PI, false);
+context.fill();
+context.stroke();
+
+     ssp += 0.3 * ssd;
+   if(ssp > 200)
+   {
+   		ssd = -1;
+   }
+   if(ssp < 0)
+   {
+   		ssd = 1;
+   }
+}
+function update() //update the gameboard
+{
+   context.clearRect(0, 0, canvas.width, canvas.height);
+   context.fillStyle = '#000000'
+   context.fillText("Score: " + Math.round(score),5,28);
+   collisions();
+   pull_spring_logic();
+   ball_x += sv;
+   ball_y += dv;
+   dv += gravity;
+   sv = sv / 1.004;
+   drawScreen();
+}
+function collisions()
+{
+    if(Math.abs((Math.sqrt((ball_x-240)*(ball_x-240)+(ball_y-300)*(ball_y-300)))) <= 25)	
+   {
+   		sv = sv * 1.1;
+   		dv = dv * -1.1;
+   }
+   else
+   {
+     if(Math.abs((Math.sqrt((ball_x-60)*(ball_x-60)+(ball_y-300)*(ball_y-300)))) <= 20)	
+   {
+   		sv = sv * 1.1;
+   		dv = dv * -1.1;
+   }
+   }
+// ball on pullspring
+   if(ballx(315,400))// ball on the pull spring
+   {
+      if(ball_y + ball_radius + 5 >= PS_ypos)
+      {
+         dv = 0;
+         sv = 0;
+      }
+      if(bally(2,100))
+      {
+         dv = 0;
+         sv = -3;
+      }
+   }
+//ball falls off the game board
+   if(ball_y >= 650)
+   {
+      ball_x = 350;
+      ball_y = 200;
+      dv = 0;
+      sv = 0;
+      score -= 10;
+   }   
+// ball hits the left paddle
+
+   if(ballx(25,130))
+   {
+      if(LPA === 35)
+      {
+         if(535 + (((ball_x - 120) * (535 - 580)) / (15 - 120))<=(ball_y + ball_radius + 5))
+         {
+            dv = -0.1;
+            sv = 0.6;
+         }
+      }      
+      if(LB === true && bally(505, 635))
+      {
+         dv = -7 + (((ball_x - 25) * (-7 - -9)) / (25 - 130));
+         sv = dv / -9;
+      }
+   }  
+   //ball hits right paddle
+     if(ballx(160,280))
+     {
+      if(RPA === 35)
+      {
+         if(565 + (((ball_x - 120) * (580 - 535)) / (15 - 120))<=(ball_y + ball_radius + 5))
+         {
+            dv = -0.1;
+            sv = -0.6;
+         }
+      }   
+      if(RB === true && bally(505,635))
+      {
+         dv = -9 + (((ball_x - 160) * (-7 - -9)) / (160 - 280));
+         sv = dv / 9;
+      }
+   }
+   //ball hits red score box
+   if(ballx(20 + ssp,80 + ssp))
+   {
+   		if(bally(60,100))
+   		{
+   			score += 0.2;
+   		}
+   }
+   
+   
+   //wall colliders
+   if(ball_x - ball_radius - 5 < 1)
+   {
+   		ball_x = 0 + ball_radius + 5;
+   		sv += 0.5;
+   }
+   if(ball_y - ball_radius - 5 < 1)
+   {
+   		sv = 0; dv += 1;
+   }
+   if(bally(115,600) && ball_x + ball_radius + 5 >= 300)
+   {
+   		sv = sv * -0.8;
+   }
+   
+   //the balls on paddles
+   if(ballx(0,40) && bally(540,650))
+   {
+   		dv += -(dv + 1);
+   		sv += 0.5;
+   }
+   if(ballx(235,400) && bally(540,650))
+   {
+   		dv += -(dv + 1);
+   		sv += -0.5;
+   }
+}
+
+function pull_spring_logic()
+{
+if(ballx(310,400))
+{
+   if(pull === true) //if the button is pressed
+   {
+     if(PS_ypos < 500)
+      PS_ypos += 0.5;
+     if(PS_ypos === 500)
+     {
+        pull = false;
+        launch = true;
+        document.getElementById("P").innerHTML = "FIRE!";
+     }
+     if(launch === true)
+     {
+        if(PS_ypos > 350)
+        {
+           PS_ypos -= 5; dv -= 4.5;
+        }
+        if(PS_ypos === 350)
+        {
+            dv -= 10;
+            PS_ypos = 350;
+            launch = false; pull = false;
+            document.getElementById("P").innerHTML = "Pull Spring";
+        }
+      }
+   }
+  }
+}
+function ballx(ra,rb)
+{
+   if(ball_x > ra && ball_x < rb)
+     return(true);
+   else
+     return(false);
+}
+
+function bally(va,vb)
+{
+   if(ball_y > va && ball_y < vb)
+     return(true);
+		   else
+     return(false);
+}
+    </script>
+  <button onmousedown="LPA = -35; LB = true" onmouseup="LPA = 35; LB = false;" class="L">Left Paddle</button>
+  <button onmousedown="RPA = -35; RB = true;" onmouseup="RPA = 35; RB = false;" class="R">Right Paddle</button>
+  <button onclick="pull = true;" id = "P" class="P">Pull Spring</button><p id = "message"></p>
+  </body>
+</html>
